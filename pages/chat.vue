@@ -18,21 +18,31 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 export default {
   name: 'ChatPage',
-  data: () => ({
-    text: '',
-    messages: ['test', 'test1']
-  }),
-  mounted: () => {
-    const socket = new WebSocket('ws://localhost:8080')
-    socket.onopen = () => console.log('socket connected')
+  data () {
+    return {
+      text: '',
+      messages: [],
+      socket: new WebSocket('ws://localhost:8080')
+    }
+  },
+  mounted () {
+    this.socket.onopen = () => console.log('socket connected')
+    this.socket.onmessage = (event) => {
+      if (!event.data) { return }
+      const message = event.data
+      this.messages.push(message)
+    }
   },
   methods: {
-    async onSend () {
-      const res = await this.$axios.$get('http://localhost:3000/test')
-      console.log(res)
+    onSend () {
+      if (!this.text) {
+        return
+      }
+      this.socket.send(this.text)
+      this.text = ''
     }
   }
 }

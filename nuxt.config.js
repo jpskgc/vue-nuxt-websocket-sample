@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+import logger from 'connect-logger'
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -73,6 +74,6 @@ export default {
   },
 
   serverMiddleware: [
-    '~/serverMiddleware/ws'
+    { path: '/', handler: '~/server-middleware/ws.ts' }
   ]
 }
